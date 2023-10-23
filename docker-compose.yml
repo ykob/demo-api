@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
-      - next-graphql-vol:/var/lib/postgresql/data
+      - postgres-data-volume:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 volumes:
-  next-graphql-vol:
+  postgres-data-volume:
