@@ -17,17 +17,14 @@ const users = [
 ];
 
 async function main() {
-  const saltRounds = 10;
-
   for (const user of users) {
-    const salt = genSaltSync(saltRounds);
-    const hashedPassword = await hashSync(user.password, salt);
+    const password = await hashSync(user.password, genSaltSync(10));
 
     await prisma.user.create({
       data: {
         name: user.name,
         email: user.email,
-        password: hashedPassword,
+        password,
       },
     });
   }

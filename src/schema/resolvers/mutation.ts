@@ -1,4 +1,4 @@
-import { compare, hash } from "bcryptjs";
+import { compare, genSaltSync, hashSync } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { APP_SECRET } from "../../auth";
 import { Context } from "../../context";
@@ -9,7 +9,7 @@ export const mutation = () => ({
     args: { email: string; password: string; name: string },
     context: Context
   ) {
-    const password = await hash(args.password, 10);
+    const password = await hashSync(args.password, genSaltSync(10));
     const user = await context.prisma.user.create({
       data: { ...args, password },
     });
