@@ -1,27 +1,38 @@
 import { PrismaClient } from "@prisma/client";
+import { genSaltSync, hashSync } from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  await prisma.user.create({
-    data: {
-      name: "Alice",
-      email: "alice@prisma.io",
-      posts: {
-        create: { title: "Hello World" },
-      },
-      profile: {
-        create: { bio: "I like turtles" },
-      },
-    },
-  });
+const users = [
+  {
+    name: "Alice",
+    email: "alice@prisma.io",
+    password: "12345678",
+  },
+  {
+    name: "Bob",
+    email: "bob@prisma.io",
+    password: "87654321",
+  },
+];
 
-  const allUsers = await prisma.user.findMany({
-    include: {
-      posts: true,
-      profile: true,
-    },
-  });
+async function main() {
+  const saltRounds = 10;
+
+  for (const user of users) {
+    const salt = genSaltSync(saltRounds);
+    const hashedPassword = await hashSync(user.password, salt);
+
+    await prisma.user.create({
+      data: {
+        name: user.name,
+        email: user.email,
+        password: hashedPassword,
+      },
+    });
+  }
+
+  const allUsers = await prisma.user.findMany();
   console.log(allUsers, { depth: null });
 }
 

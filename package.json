@@ -8,7 +8,7 @@
     "start": "ts-node src/main.ts",
     "migrate": "prisma migrate dev --name init",
     "generate": "prisma generate",
-    "seed": "ts-node src/seed.ts",
+    "seed": "ts-node prisma/seed.ts",
     "gui": "prisma studio"
   },
   "repository": {
