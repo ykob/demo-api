@@ -1,4 +1,4 @@
-import { DateTimeResolver } from "graphql-scalars";
+import { Link, User } from "@prisma/client";
 import { Context } from "../../context";
 import { mutation } from "./mutation";
 import { query } from "./query";
@@ -6,23 +6,29 @@ import { query } from "./query";
 export const resolvers = {
   Query: query(),
   Mutation: mutation(),
-  DateTime: DateTimeResolver,
-  Post: {
-    author: (parent, _args, context: Context) => {
-      return context.prisma.post
+  Link: {
+    id: (parent: Link) => parent.id,
+    description: (parent: Link) => parent.description,
+    url: (parent: Link) => parent.url,
+    postedBy: (parent: Link, args: {}, context: Context) => {
+      if (parent.postedById === null) {
+        return null;
+      }
+
+      return context.prisma.link
         .findUnique({
-          where: { id: parent?.id },
+          where: { id: parent.id },
         })
-        .author();
+        .postedBy();
     },
   },
   User: {
-    posts: (parent, _args, context: Context) => {
+    links: (parent: User, args: {}, context: Context) => {
       return context.prisma.user
         .findUnique({
-          where: { id: parent?.id },
+          where: { id: parent.id },
         })
-        .posts();
+        .links();
     },
   },
 };
