@@ -1,6 +1,10 @@
+import { readFileSync } from "fs";
 import { createSchema } from "graphql-yoga";
 import { resolvers } from "./resolvers";
-import { typeDefs } from "./typeDefs";
+
+const typeDefs = readFileSync(require.resolve("./schema.graphql")).toString(
+  "utf-8"
+);
 
 export const schema = createSchema({
   typeDefs,
